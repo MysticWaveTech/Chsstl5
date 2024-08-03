@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Summon a Genie</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #ff8c00, #ff6347);
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+        .genie {
+            width: 200px;
+            height: 300px;
+            background: url('genie.png') no-repeat center center;
+            background-size: contain;
+            margin: 50px auto;
+            position: relative;
+            display: none;
+        }
+        .genie-button {
+            display: block;
+            margin: 20px auto;
+            padding: 15px 30px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        .genie-button:hover {
+            background-color: #45a049;
+            transform: scale(1.05);
+        }
+        .genie-video {
+            display: none;
+            margin: 20px auto;
+            max-width: 90%;
+            border: 5px solid #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        .wish-section {
+            display: none;
+            margin: 20px auto;
+            padding: 20px;
+            max-width: 400px; /* Reduced width */
+            background-color: rgba(0, 0, 0, 0.7);
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        .wish-input {
+            width: 100%;
+            max-width: 300px; /* Limited width */
+            padding: 15px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .wish-input::placeholder {
+            color: #ccc;
+        }
+    </style>
+</head>
+<body>
+    <div class="genie" id="genie"></div>
+    <video id="genieVideo" class="genie-video" controls></video>
+    <button class="genie-button" onclick="summonGenie()">Summon the Genie</button>
+
+    <div id="wishSection" class="wish-section">
+        <input type="text" id="wishInput" class="wish-input" placeholder="What is your wish?">
+        <button class="genie-button" onclick="tellGenieWish()">Tell the Genie Your Wish</button>
+    </div>
+
+    <script>
+        const videoFiles = [
+            'https://github.com/MysticWaveTech/Chsstl5/raw/main/17288-280036015_small.mp4',
+            'https://github.com/MysticWaveTech/Chsstl5/raw/main/17290-280036022_small.mp4',
+            'https://github.com/MysticWaveTech/Chsstl5/raw/main/17291-280036018_small.mp4',
+            'https://github.com/MysticWaveTech/Chsstl5/raw/main/17292-280036024_small%20(2).mp4',
+            'https://github.com/MysticWaveTech/Chsstl5/raw/main/17293-280036028_small.mp4',
+            'https://github.com/MysticWaveTech/Chsstl5/raw/main/17294-280036030_small.mp4',
+            'https://github.com/MysticWaveTech/Chsstl5/raw/main/17296-280036039_small.mp4'
+        ];
+
+        function summonGenie() {
+            setTimeout(function() {
+                document.getElementById('genie').style.display = 'block';
+                playRandomVideo();
+            }, 2000); // 2 seconds delay
+        }
+
+        function playRandomVideo() {
+            const videoElement = document.getElementById('genieVideo');
+            const randomVideo = videoFiles[Math.floor(Math.random() * videoFiles.length)];
+            videoElement.src = randomVideo;
+            videoElement.style.display = 'block';
+            videoElement.play();
+            videoElement.onended = function() {
+                askForWish();
+            };
+        }
+
+        function askForWish() {
+            var msg = new SpeechSynthesisUtterance();
+            msg.text = "The magic is complete. Now, tell me, what is your deepest wish?";
+            msg.lang = 'en-US';
+            msg.onend = function() {
+                document.getElementById('wishSection').style.display = 'block';
+            };
+            window.speechSynthesis.speak(msg);
+        }
+
+        function tellGenieWish() {
+            const wish = document.getElementById('wishInput').value;
+            var msg = new SpeechSynthesisUtterance();
+            msg.text = `Ah, a wish for ${wish}. Your wish is granted!`;
+            msg.lang = 'en-US';
+            msg.onend = function() {
+                document.getElementById('genieVideo').style.display = 'none';
+                document.getElementById('wishSection').style.display = 'none'; // Hide wish section after processing
+            };
+            window.speechSynthesis.speak(msg);
+        }
+    </script>
+</body>
+</html>
